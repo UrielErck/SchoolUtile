@@ -1,0 +1,14 @@
+{
+    "RegEdit": [
+        {
+            "display_name": "test1",
+            "key": "HKEY_LOCAL_MACHINE",
+            "name": "NoDispAppearancePage",
+            "off_value": 0,
+            "on_value": 1,
+            "state": 1,
+            "sub_key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+            "type": "REG_DWORD"
+        }
+    ]
+}
