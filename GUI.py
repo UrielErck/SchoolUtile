@@ -59,6 +59,25 @@ def main():
         Elements = rd.read_dump()
         ischanged = 0
 
+        def add_el(self):
+            temp = self.Elements.get('RegEdit')
+            temp.append({
+            'display_name': 'NEW',
+            "state": 0,
+            'on_value': 1,
+            'off_value': 0,
+            'key': 'HKEY_LOCAL_MACHINE',
+            'sub_key': 'SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
+            'name': 'NoDispAppearancePage',
+            'type': 'REG_DWORD',
+            })
+            self.Elements.update({'RegEdit': temp})
+            self.dataEnt = []
+            rd.create_dump(self.Elements)
+            self.root.destroy()
+            self.root = ctk.CTkFrame(master=app, fg_color=standartcolor)
+            self.__init__()
+
         def remove_el(self, index):
             print('triggerred')
             self.dataEnt[index].get("itemframe").destroy()
@@ -71,27 +90,30 @@ def main():
         def save_changes(self):
             print(self.visible)
             if not self.visible:
-                return 1
+                pass
             self.ischanged = 1
             for i in range(len(self.dataEnt)):
                 state = self.dataEnt[i].get('stateswitch').get()
                 self.Elements.get('RegEdit')[i].update({'state': state})
                 rd.create_dump(self.Elements)
-            return 0
 
         def __init__(self):
             super().__init__()
             self.root.grid(row=0, column=1)
             app.bind('<Return>', lambda event: self.save_changes())
-            ElFrame = ctk.CTkFrame(self.root, fg_color=standartcolor)
+            self.ElFrame = ctk.CTkFrame(self.root, fg_color=standartcolor)
             index = 0
             savebtn = ctk.CTkButton(self.root, text='Save', width=20, fg_color='green', hover_color='dark green',
                                     command=self.save_changes)
             savebtn.grid(column=0, row=1, padx=10, pady=3, sticky='WS')
 
+            addbtn = ctk.CTkButton(self.root, text='+', width=20, fg_color='green', hover_color='dark green',
+                                    command=self.add_el)
+            addbtn.grid(column=0, row=1, padx=10, pady=3, sticky='ES')
+
             for i in self.Elements.get('RegEdit'):
                 index += 1
-                itemframe = ctk.CTkFrame(ElFrame, fg_color='#154972', corner_radius=5)
+                itemframe = ctk.CTkFrame(self.ElFrame, fg_color='#154972', corner_radius=5)
                 itemframe.grid(column=1, row=index-1, padx=10, pady=10)
                 self.dataEnt.append({
                     "itemframe": itemframe,
@@ -109,10 +131,11 @@ def main():
                     self.dataEnt[index-1].get('stateswitch').deselect()
                 self.dataEnt[index - 1].get('stateswitch').grid(row=0, column=2)
                 self.dataEnt[index - 1].get('delbtn').grid(row=0, column=3)
-            ElFrame.grid(row=0, column=0, padx=1, pady=1)
+            self.ElFrame.grid(row=0, column=0, padx=1, pady=1)
 
-
-
+    class Access:
+        root = ctk.CTkFrame(master=app, fg_color=standartcolor)
+        
 
     def setvisible(frame):
         for i in Menu.items.values():
@@ -136,5 +159,3 @@ def main():
     Menu()
     setvisible(RegEditFrame)
     app.mainloop()
-if __name__ == '__main__':
-    main()
