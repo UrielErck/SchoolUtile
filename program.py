@@ -15,4 +15,7 @@ def save_reg():
 
 import GUI
 GUI.main()
-save_reg()
+try:
+    save_reg()
+except PermissionError:
+    print('Not Enough Permissions')
