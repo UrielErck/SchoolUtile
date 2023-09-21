@@ -65,8 +65,11 @@ def main():
 
             for i in self.Elements.get('RegEdit'):
                 print(f'Element {index}: {i}')
+                tempcolor = '#154972'
+                if app['bg'] == '#FFFFFF':
+                    tempcolor = '#3192de'
                 index += 1
-                itemframe = ctk.CTkFrame(master=ElFrame, fg_color='#154972', corner_radius=5)
+                itemframe = ctk.CTkFrame(master=ElFrame, fg_color=tempcolor, corner_radius=5)
                 self.dataEnt.append({
                     "itemframe": itemframe,
                     'name': ctk.CTkLabel(itemframe, text=i.get('display_name')),
