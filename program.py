@@ -13,6 +13,12 @@ def save_reg():
         rtype = re.dataconvert(texttype=i.get("type"))
         re.add(key=key, sub_key=sub_key, value=value, name=name, rtype=rtype)
 
+try:
+    import reader as rd
+    if rd.read_RegFolder() == []:
+        rd.write_RegFolder()
+except OSError:
+    pass
 import GUI
 GUI.main()
 try:

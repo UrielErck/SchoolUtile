@@ -54,7 +54,7 @@ def main():
             self.dataEnt = []
             app.bind('<Return>', lambda event: self.save_changes())
             ElFrame = ctk.CTkScrollableFrame(master=self.root, fg_color=standartcolor)
-            index = 0
+            ElFrame.grid(row=0, column=0, sticky='E')
             savebtn = ctk.CTkButton(master=self.root, text='Save', width=20, fg_color='green', hover_color='dark green',
                                     command=self.save_changes)
             savebtn.grid(column=0, row=1, padx=10, pady=3, sticky='WS')
@@ -63,6 +63,7 @@ def main():
                                     command=self.add_el)
             addbtn.grid(column=0, row=1, padx=10, pady=3, sticky='ES')
 
+            index = 0
             for i in self.Elements.get('RegEdit'):
                 print(f'Element {index}: {i}')
                 tempcolor = '#154972'
@@ -87,13 +88,12 @@ def main():
                 self.dataEnt[index - 1].get('stateswitch').grid(row=0, column=2)
                 self.dataEnt[index - 1].get('delbtn').grid(row=0, column=3)
                 itemframe.grid(column=1, row=index - 1, padx=10, pady=10)
-            ElFrame.grid(row=0, column=0)
 
 
     class Access:
         root = ctk.CTkFrame(master=app, fg_color=standartcolor)
         visible = False
-        FoldersData = rd.read_RegFolder()
+        FoldersData = [i for i in rd.read_RegFolder()]
         ElData = []
 
         def __init__(self):
@@ -101,28 +101,29 @@ def main():
             self.root.grid(row=0, column=1)
             index = -1
             Ellist = ctk.CTkScrollableFrame(self.root, fg_color=standartcolor)
+            Ellist.grid(row=0, column=0, sticky='E')
+            selectbtn = ctk.CTkButton(self.root, text='📂', width=30, font=('Calibre', 18), height=30, bg_color='transparent',
+                                    corner_radius=0, hover_color='#2682cb',
+                                            command=self.addel)
+            selectbtn.grid(row=0, column=2, sticky='SE')
             for i in self.FoldersData:
                 index += 1
                 frame = ctk.CTkFrame(master=Ellist, fg_color='#154972', corner_radius=5)
                 self.ElData.append({
                     'Frame': frame,
-                    'Name': ctk.CTkLabel(frame, text=str(i.split("\\")[-1])),
+                    'Name': ctk.CTkLabel(frame, text=str(i.split("/")[-1])),
                     'DelBtn': ctk.CTkButton(frame, text='×', width=30, font=('Calibre', 20), height=30, fg_color='red',
                                     corner_radius=0, hover_color='dark red',
                                             command=lambda ind=index: self.delel(index=ind)),
                     'Path': ctk.CTkLabel(frame, text=i),
                     'Index': index,
-                    'selectbtn': ctk.CTkButton(frame, text='📂', width=30, font=('Calibre', 18), height=30, fg_color='transparent',
-                                    corner_radius=0, hover_color='#2682cb',
-                                            command=lambda ind=index: self.browse(ind)),
                 })
-                frame, name, delbtn, path, index, selectbtn = self.ElData[index].values()
+                frame, name, delbtn, path, index = self.ElData[index].values()
                 frame.grid(row=index, column=0, padx=10, pady=10)
                 name.grid(row=0, column=0, columnspan=2, padx=5)
                 delbtn.grid(row=0, column=3, sticky='E')
-                selectbtn.grid(row=0, column=2, sticky='E')
                 path.grid(row=1, column=0, columnspan=2, padx=5)
-            Ellist.grid(row=0, column=0)
+
 
         def delel(self, index: int):
             print(f'del el Id:{index} Name: {self.ElData[index].get("Name").cget("text")}')
@@ -132,10 +133,11 @@ def main():
             self.FoldersData.pop(index)
             Access()
 
-        def browse(self, index):
+        def addel(self):
             filename = ctk.filedialog.askdirectory()
+            self.FoldersData.append(filename)
             print(f'filePATH: {filename}')
-            return filename
+            self.__init__()
 
     class Menu:
         btncolor = ''

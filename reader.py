@@ -25,8 +25,9 @@ def read_RegFolder():
         )
         value = wrg.QueryValueEx(PATH, 'FoldersData')[0]
         return value
-    except FileNotFoundError:
+    except OSError:
         print(f'Regedit key does not exist')
+        return []
 
 
 def write_RegFolder(value: list = []):
@@ -37,11 +38,15 @@ def write_RegFolder(value: list = []):
     else:
         print(f'Write to FoldersData: {value}')
     import winreg as wrg
-    PATH = wrg.OpenKey(
-        wrg.HKEY_LOCAL_MACHINE,
-        'SOFTWARE\\SchoolUtile'
-    )
-    wrg.SetValueEx(PATH, 'FoldersData', 0, wrg.REG_MULTI_SZ, value)
+    try:
+        PATH = wrg.OpenKey(
+            wrg.HKEY_LOCAL_MACHINE,
+            'SOFTWARE\\SchoolUtile'
+        )
+        wrg.SetValueEx(PATH, 'FoldersData', 0, wrg.REG_MULTI_SZ, value)
+    except OSError:
+        print('No enough permissions')
+        return 1
 # {
 #     "RegEdit": [
 #         {'display_name': 'test1',
