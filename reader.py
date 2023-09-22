@@ -10,9 +10,14 @@ def create_dump(data):
 
 def read_dump():
     import json
-    file = open('config.SUCF', 'r')
-    data = json.load(file)
-    file.close()
+    try:
+        file = open('config.SUCF', 'r')
+        data = json.load(file)
+        file.close()
+    except FileNotFoundError:
+        import ctypes
+        ctypes.windll.user32.MessageBoxW(0, u"Please create configuration file config.SUCF\n and paste {'RegEdit': []} by json format", u"Configuration File Not Found", 0)
+        return {'RegEdit': []}
     return data
 
 
