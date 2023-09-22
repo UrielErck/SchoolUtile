@@ -19,8 +19,20 @@ try:
         rd.write_RegFolder()
 except OSError:
     pass
+
+data = {'RegFolder': rd.read_RegFolder()}
 import GUI
 GUI.main()
+
+try:
+    import icaclsEdit as ie
+    for i in data.get('RegFolder'):
+        if not i in rd.read_RegFolder():
+            ie.remove_acces(i)
+    for i in rd.read_RegFolder():
+        ie.create_access(i)
+except PermissionError:
+    print('Not Enough Permissions')
 try:
     save_reg()
 except PermissionError:

@@ -1,14 +1,14 @@
 def main():
     import reader as rd
     import customtkinter as ctk
-    standartcolor = ('#FFFFFF', '#333333')
-    app = ctk.CTk(fg_color=standartcolor)
+    standartcolor = [('#FFFFFF', '#333333'), ('#3192de', '#154972')]
+    app = ctk.CTk(fg_color=standartcolor[0])
     app.resizable(width=False, height=False)
     app.title('Test')
 
     class RegEditFrame:
         visible = False
-        root = ctk.CTkFrame(master=app, fg_color=standartcolor)
+        root = ctk.CTkFrame(master=app, fg_color=standartcolor[0])
         dataEnt = []
         Elements = rd.read_dump()
         ischanged = 0
@@ -53,7 +53,7 @@ def main():
             self.root.grid(row=0, column=1)
             self.dataEnt = []
             app.bind('<Return>', lambda event: self.save_changes())
-            ElFrame = ctk.CTkScrollableFrame(master=self.root, fg_color=standartcolor)
+            ElFrame = ctk.CTkScrollableFrame(master=self.root, fg_color=standartcolor[0], width=300)
             ElFrame.grid(row=0, column=0, sticky='E')
             savebtn = ctk.CTkButton(master=self.root, text='Save', width=20, fg_color='green', hover_color='dark green',
                                     command=self.save_changes)
@@ -66,32 +66,30 @@ def main():
             index = 0
             for i in self.Elements.get('RegEdit'):
                 print(f'Element {index}: {i}')
-                tempcolor = '#154972'
-                if app['bg'] == '#FFFFFF':
-                    tempcolor = '#3192de'
                 index += 1
-                itemframe = ctk.CTkFrame(master=ElFrame, fg_color=tempcolor, corner_radius=5)
+                itemframe = ctk.CTkFrame(master=ElFrame, fg_color=standartcolor[1], corner_radius=5)
                 self.dataEnt.append({
                     "itemframe": itemframe,
                     'name': ctk.CTkLabel(itemframe, text=i.get('display_name')),
                     'stateswitch': ctk.CTkSwitch(itemframe, text=None),
-                    'delbtn': ctk.CTkButton(itemframe, text='×', width=30, font=('Calibre', 20), height=30, fg_color='red',
-                                    corner_radius=0, hover_color='dark red',
+                    'delbtn': ctk.CTkButton(itemframe, text='×', width=22, height=22, fg_color='red'
+                                            , hover_color='dark red',
                                             command=lambda ind=index: self.remove_el(ind-1)),
                     'index': index-1,
                 })
-                self.dataEnt[index-1].get('name').grid(row=0, column=0, columnspan=2, padx=5)
+                self.dataEnt[index-1].get('name').grid(row=0, column=0, sticky='W', padx=3, columnspan=2)
                 if self.Elements.get('RegEdit')[index-1].get('state') in [1, '1', True, 'True']:
                     self.dataEnt[index-1].get('stateswitch').select()
                 elif self.Elements.get('RegEdit')[index-1].get('state') in [0, '0', False, 'False']:
                     self.dataEnt[index-1].get('stateswitch').deselect()
-                self.dataEnt[index - 1].get('stateswitch').grid(row=0, column=2)
-                self.dataEnt[index - 1].get('delbtn').grid(row=0, column=3)
-                itemframe.grid(column=1, row=index - 1, padx=10, pady=10)
+                self.dataEnt[index - 1].get('stateswitch').grid(row=1, column=0, padx=3, pady=3, sticky='WS')
+                self.dataEnt[index - 1].get('delbtn').grid(row=1, padx=3, sticky='ES', column=1, pady=3)
+                itemframe.grid(column=1, row=index - 1, padx=10, pady=10, sticky='WE')
+                itemframe.grid_columnconfigure(1, weight=1)
 
 
     class Access:
-        root = ctk.CTkFrame(master=app, fg_color=standartcolor)
+        root = ctk.CTkFrame(master=app, fg_color=standartcolor[0])
         visible = False
         FoldersData = [i for i in rd.read_RegFolder()]
         ElData = []
@@ -100,29 +98,39 @@ def main():
             self.ElData = []
             self.root.grid(row=0, column=1)
             index = -1
-            Ellist = ctk.CTkScrollableFrame(self.root, fg_color=standartcolor)
+            Ellist = ctk.CTkScrollableFrame(self.root, fg_color=standartcolor[0], width=300)
             Ellist.grid(row=0, column=0, sticky='E')
             selectbtn = ctk.CTkButton(self.root, text='📂', width=30, font=('Calibre', 18), height=30, bg_color='transparent',
-                                    corner_radius=0, hover_color='#2682cb',
-                                            command=self.addel)
-            selectbtn.grid(row=0, column=2, sticky='SE')
+                                    corner_radius=5, hover_color='#2682cb',
+                                            command=self.GUI_addel)
+            selectbtn.grid(row=0, column=2, sticky='SE', pady=5, padx=5)
+
+            selectbtn = ctk.CTkButton(self.root, text='💾', width=30, font=('Calibre', 18), height=30,
+                                      bg_color='transparent',
+                                      corner_radius=5, hover_color='#2682cb',
+                                      command=lambda data=self.FoldersData: rd.write_RegFolder(data))
+            selectbtn.grid(row=1, column=2, sticky='SE', pady=5, padx=5)
             for i in self.FoldersData:
                 index += 1
-                frame = ctk.CTkFrame(master=Ellist, fg_color='#154972', corner_radius=5)
+                frame = ctk.CTkFrame(master=Ellist, fg_color=standartcolor[1], corner_radius=5)
                 self.ElData.append({
                     'Frame': frame,
-                    'Name': ctk.CTkLabel(frame, text=str(i.split("/")[-1])),
-                    'DelBtn': ctk.CTkButton(frame, text='×', width=30, font=('Calibre', 20), height=30, fg_color='red',
-                                    corner_radius=0, hover_color='dark red',
+                    'Name': ctk.CTkLabel(frame, text=f"{str(i.split('/')[-1])}"), #{' '*(40-len(str(i.split('/')[-1])))}
+                    'DelBtn': ctk.CTkButton(frame, text='×', height=22, width=22, fg_color='red',
+                                            hover_color='dark red',
                                             command=lambda ind=index: self.delel(index=ind)),
-                    'Path': ctk.CTkLabel(frame, text=i),
+                    'Path': i,
                     'Index': index,
+                    'infobtn': ctk.CTkButton(frame, text='ℹ', height=22, width=22, fg_color='green',
+                                            hover_color='dark green',
+                                            command=lambda ind=index: self.info(index=ind)),
                 })
-                frame, name, delbtn, path, index = self.ElData[index].values()
-                frame.grid(row=index, column=0, padx=10, pady=10)
-                name.grid(row=0, column=0, columnspan=2, padx=5)
-                delbtn.grid(row=0, column=3, sticky='E')
-                path.grid(row=1, column=0, columnspan=2, padx=5)
+                frame, name, delbtn, path, index, infobtn = self.ElData[index].values()
+                frame.grid(row=index, padx=10, pady=10, sticky='WE')
+                frame.grid_columnconfigure(1, weight=1)
+                name.grid(row=0, column=0, padx=5)
+                infobtn.grid(row=0, column=1, padx=3, sticky='E')
+                delbtn.grid(row=0, column=2, padx=3, sticky='E')
 
 
         def delel(self, index: int):
@@ -133,11 +141,70 @@ def main():
             self.FoldersData.pop(index)
             Access()
 
-        def addel(self):
-            filename = ctk.filedialog.askdirectory()
+        def selel(self, lable, type: int = 0):
+            if type == 0:
+                filename = ctk.filedialog.askdirectory()
+            elif type == 1:
+                filename = ctk.filedialog.askopenfilename()
+            else:
+                filename = ''
+            if filename == '':
+                print(f'Folder not selected')
+                return ''
+            lable.configure(text=filename)
+            return filename
+
+        def addel(self, filename: str = ''):
+            if filename in ['', None] or type(filename) == int:
+                print('Wrong filename value')
+                return 1
             self.FoldersData.append(filename)
             print(f'filePATH: {filename}')
             self.__init__()
+
+        def GUI_addel(self):
+            path = ''
+
+            newlayer = ctk.CTkToplevel(app, fg_color=standartcolor[0])
+            newlayer.resizable(width=False, height=False)
+            newlayer.title('Add Element')
+            newlayer.grid()
+
+            lablepath = ctk.CTkLabel(newlayer, text=path, font=('Calibri', 15), fg_color=standartcolor[1],
+                                     corner_radius=5)
+            lablepath.grid(row=0, column=0, columnspan=3, padx=5, pady=5, sticky='WE')
+
+            selfoldbtn = ctk.CTkButton(newlayer, text='Select Folder', width=40,
+                                       command=lambda lable=lablepath: self.selel(lable=lable, type=0))
+            selfoldbtn.grid(row=1, column=0, padx=5, pady=5, sticky='W')
+
+            selfilebtn = ctk.CTkButton(newlayer, text='Select File', width=40,
+                                       command=lambda lable=lablepath: self.selel(lable=lable, type=1))
+            selfilebtn.grid(row=1, column=1, padx=5, pady=5)
+
+            yesbtn = ctk.CTkButton(newlayer, text='✔', width=25, fg_color='green', hover_color='dark green',
+                                       command=lambda lable=lablepath: self.addel(filename=lable.cget('text')))
+            yesbtn.grid(row=1, column=2, sticky='E', padx=5, pady=5)
+
+            nobtn = ctk.CTkButton(newlayer, text='❌', width=25, fg_color='red', hover_color='dark red',
+                                   command=lambda frame=newlayer: frame.destroy())
+            nobtn.grid(row=1, column=3, sticky='E', padx=5, pady=5)
+
+        def info(self, index: int = 0):
+            newlayer = ctk.CTkToplevel(app, fg_color=standartcolor[0])
+            newlayer.resizable(width=False, height=False)
+            newlayer.title('Element Info')
+            newlayer.grid()
+            text = [f' Full Path: {self.ElData[index].get("Path")}',
+                    f'Name: {str(self.ElData[index].get("Path").split("/")[-1])}',
+                    f'Access type: M (Can`t delete folder/file/files in folder)']
+            index = 0
+            for i in text:
+                frame = ctk.CTkFrame(newlayer, fg_color=standartcolor[1], corner_radius=5)
+                frame.grid(row=index, column=0, padx=10, pady=10, sticky='WEN', columnspan=3)
+                lable = ctk.CTkLabel(frame, text=i, font=('Calibri', 15))
+                lable.grid(padx=5, pady=3)
+                index +=1
 
     class Menu:
         btncolor = ''
