@@ -49,6 +49,19 @@ def write_RegFolder(value: list = []):
         'SOFTWARE\\SchoolUtile'
     )
     wrg.SetValueEx(PATH, 'FoldersData', 0, wrg.REG_MULTI_SZ, value)
+
+def resource_path(relative_path):
+    import os
+    import sys
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
     # except PermissionError:
     #     print('No enough permissions')
     #     return 1
