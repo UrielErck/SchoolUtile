@@ -18,6 +18,10 @@
    "value": false
   },
   {
+   "optionDest": "icon_file",
+   "value": "D:/Files/SchoolUtile/icon.ico"
+  },
+  {
    "optionDest": "ascii",
    "value": false
   },
@@ -84,6 +88,14 @@
   {
    "optionDest": "datas",
    "value": "D:/Files/SchoolUtile/RegEdit.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/Files/SchoolUtile/github_dark.png;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/Files/SchoolUtile/github_white.png;."
   }
  ],
  "nonPyinstallerOptions": {
