@@ -8,6 +8,7 @@ def main():
     app = ctk.CTk(fg_color=standartcolor[0])
     app.resizable(width=False, height=False)
     app.title('Test')
+    app.iconbitmap(rd.resource_path('icon.ico'))
 
     class MainPage:
         text = {'Title': 'User`s Manual',

@@ -96,6 +96,10 @@
   {
    "optionDest": "datas",
    "value": "D:/Files/SchoolUtile/github_white.png;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/Files/SchoolUtile/icon.ico;."
   }
  ],
  "nonPyinstallerOptions": {
