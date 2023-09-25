@@ -51,7 +51,7 @@
   },
   {
    "optionDest": "uac_admin",
-   "value": true
+   "value": false
   },
   {
    "optionDest": "uac_uiaccess",
@@ -100,6 +100,10 @@
   {
    "optionDest": "datas",
    "value": "D:/Files/SchoolUtile/icon.ico;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/Files/SchoolUtile/backup.py;."
   }
  ],
  "nonPyinstallerOptions": {

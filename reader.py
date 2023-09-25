@@ -65,16 +65,20 @@ def resource_path(relative_path):
     # except PermissionError:
     #     print('No enough permissions')
     #     return 1
+
+
 # {
 #     "RegEdit": [
-#         {'display_name': 'test1',
+#         {
+#             "display_name": "NEW",
+#             "key": "HKEY_LOCAL_MACHINE",
+#             "name": "NoDispAppearancePage",
+#             "off_value": 0,
+#             "on_value": 1,
 #             "state": 0,
-#             'on_value': 1,
-#             'off_value': 0,
-#             'key': 'HKEY_LOCAL_MACHINE',
-#             'sub_key': 'SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
-#             'name': 'NoDispAppearancePage',
-#             'type': 'REG_DWORD',
+#             "sub_key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+#             "type": "REG_DWORD"
 #         }
-#     ]
+#     ],
+#     "backup_state": 1
 # }

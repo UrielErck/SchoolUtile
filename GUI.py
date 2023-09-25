@@ -1,13 +1,14 @@
 def main():
     import reader as rd
     import customtkinter as ctk
+    from easygui import fileopenbox
     from PIL import Image
     import webbrowser
     linkgit = 'https://github.com/UrielErck/SchoolUtile/tree/main'
-    standartcolor = [('#cbd7ed', '#333333'), ('#336b97', '#154972')]
+    standartcolor = [('#FFFFFF', '#333333'), ('#336b97', '#154972')]
     app = ctk.CTk(fg_color=standartcolor[0])
     app.resizable(width=False, height=False)
-    app.title('Test')
+    app.title('Admin tool')
     app.iconbitmap(rd.resource_path('icon.ico'))
 
     class MainPage:
@@ -66,7 +67,7 @@ def main():
             textframe = ctk.CTkScrollableFrame(master=self.root, fg_color='transparent', width=350)
             textframe.grid(column=1, row=0, ipadx=10, ipady=10, columnspan=2)
             Title = ctk.CTkLabel(master=textframe, font=('Calibre', 20), text=self.text.get('Title'),
-                                 fg_color=standartcolor[1], corner_radius=5)
+                                 fg_color=standartcolor[1], corner_radius=5, text_color='white')
             Title.grid(row=0, column=1, padx=5, pady=5, ipadx=5, ipady=5, sticky='WE')
 
             githubphoto = ctk.CTkImage(light_image=Image.open(rd.resource_path('github_white.png')),
@@ -77,7 +78,7 @@ def main():
             Githudbtn.grid(row=0, column=2, padx=5, pady=5, ipadx=5, ipady=5, sticky='E')
 
             Text = ctk.CTkLabel(master=textframe, font=('Calibre', 15), text="\n".join(self.text.get('Text')),
-                                 fg_color=standartcolor[1], corner_radius=5, justify='left')
+                                 fg_color=standartcolor[1], corner_radius=5, justify='left', text_color='white')
             Text.grid(row=1, column=0, padx=5, pady=5, ipadx=5, ipady=5, sticky='WE', columnspan=3)
 
 
@@ -110,8 +111,10 @@ def main():
             print(f'del el Id:{index} Name: {self.dataEnt[index].get("name").cget("text")}')
             self.dataEnt[index].get("itemframe").destroy()
             self.dataEnt.pop(index)
-            self.Elements.get('RegEdit').pop(index)
-            self.Elements.update({'RegEdit': self.Elements.get('RegEdit')})
+            tmplst = self.Elements.get('RegEdit')
+            tmplst.pop(index)
+            self.Elements.update({'RegEdit': tmplst})
+            rd.create_dump(self.Elements)
             return 0
 
         def save_changes(self):
@@ -124,6 +127,14 @@ def main():
                 self.Elements.get('RegEdit')[i].update({'state': state})
                 rd.create_dump(self.Elements)
 
+        def backup(self, state):
+            data = rd.read_dump()
+            data: dict
+            data.update({'backup_state': state})
+            rd.create_dump(data)
+            import backup
+            backup.autorun(state)
+
         def __init__(self):
             super().__init__()
             self.ElFrame.destroy()
@@ -132,15 +143,26 @@ def main():
             app.bind('<Return>', lambda event: self.save_changes())
             self.ElFrame = ctk.CTkScrollableFrame(master=self.root, fg_color=standartcolor[0], width=300)
             self.ElFrame.grid(row=0, column=0, sticky='E', columnspan=3)
-            savebtn = ctk.CTkButton(master=self.root, text='💾', width=30, font=('Calibre', 18), height=30,
+
+            buttonframe = ctk.CTkFrame(master=self.root, fg_color=standartcolor[0])
+            buttonframe.grid(column=0, row=1, sticky='SW', pady=10, padx=8)
+
+            savebtn = ctk.CTkButton(master=buttonframe, text='💾', width=30, font=('Calibre', 18), height=30,
                                     fg_color=standartcolor[1], corner_radius=5, hover_color=standartcolor[1][::-1],
                                     command=self.save_changes)
-            savebtn.grid(column=0, row=1, padx=10, pady=10, sticky='SW')
+            savebtn.grid(column=0, padx=10, row=0)
 
-            addbtn = ctk.CTkButton(master=self.root, text='+', width=32, font=('Calibre', 18), height=30,
+            addbtn = ctk.CTkButton(master=buttonframe, text='+', width=32, font=('Calibre', 18), height=30,
                                    fg_color=standartcolor[1], corner_radius=5, hover_color=standartcolor[1][::-1],
                                    command=self.add_el)
-            addbtn.grid(column=0, row=1, padx=10, pady=10, sticky='S')
+            addbtn.grid(column=1, padx=10, row=0)
+
+            backupswitch = ctk.CTkSwitch(master=self.root, text='Auto Back-Up', width=32, font=('Calibre', 14),
+                                         height=30)
+            backupswitch.configure(command=lambda: self.backup(state=backupswitch.get()))
+            if rd.read_dump().get("backup_state") in ['1', 1]:
+                backupswitch.select()
+            backupswitch.grid(column=1, row=1, padx=10, pady=10, sticky='S')
 
             index = 0
             for i in self.Elements.get('RegEdit'):
@@ -149,7 +171,7 @@ def main():
                 itemframe = ctk.CTkFrame(master=self.ElFrame, fg_color=standartcolor[1], corner_radius=5)
                 self.dataEnt.append({
                     "itemframe": itemframe,
-                    'name': ctk.CTkLabel(itemframe, text=i.get('display_name'), width=260),
+                    'name': ctk.CTkLabel(itemframe, text=i.get('display_name'), width=260, text_color='white'),
                     'stateswitch': ctk.CTkSwitch(itemframe, text=None),
                     'delbtn': ctk.CTkButton(itemframe, text='×', width=22, height=22, fg_color='red'
                                             , hover_color='dark red',
@@ -194,7 +216,7 @@ def main():
                 frame = ctk.CTkFrame(master=self.Ellist, fg_color=standartcolor[1], corner_radius=5)
                 self.ElData.append({
                     'Frame': frame,
-                    'Name': ctk.CTkLabel(frame, text=f"{str(i.split('/')[-1])}", width=210),
+                    'Name': ctk.CTkLabel(frame, text=f"{str(i.split('/')[-1])}", width=210, text_color='white'),
                     'DelBtn': ctk.CTkButton(frame, text='×', height=22, width=22, fg_color='red',
                                             hover_color='dark red',
                                             command=lambda ind=index: self.delel(index=ind)),
@@ -223,21 +245,28 @@ def main():
         def selel(self, lable, type: int = 0):
             if type == 0:
                 filename = ctk.filedialog.askdirectory()
+                filename: str
             elif type == 1:
-                filename = ctk.filedialog.askopenfilename()
+                filename = ctk.filedialog.askopenfilenames(filetypes=(('Links', '*.lnk'), ('All files', '*.*')))
+                filename: tuple
             else:
                 filename = ''
+                filename: str
             if filename == '':
                 print(f'Folder not selected')
                 return ''
-            lable.configure(text=filename)
+            lable.configure(text='\n'.join(filename))
             return filename
 
-        def addel(self, frame, filename: str = '', ):
+        def addel(self, frame, filename: str or tuple = ''):
+            print(filename)
             if filename in ['', None] or type(filename) == int:
                 print('Wrong filename value')
                 return [frame, 1]
-            self.FoldersData.append(filename)
+
+            filename = filename.split('\n')
+            for i in filename:
+                self.FoldersData.append(i)
             print(f'filePATH: {filename}')
             self.__init__()
             return [frame, 0]
@@ -248,10 +277,11 @@ def main():
             newlayer = ctk.CTkToplevel(app, fg_color=standartcolor[0])
             newlayer.resizable(width=False, height=False)
             newlayer.title('Add Element')
+            newlayer.attributes('-topmost', 'true')
             newlayer.grid()
 
             lablepath = ctk.CTkLabel(newlayer, text=path, font=('Calibri', 15), fg_color=standartcolor[1],
-                                     corner_radius=5, width=280)
+                                     corner_radius=5, width=280, text_color='white')
             lablepath.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
 
             # Select Frame
@@ -282,6 +312,7 @@ def main():
             newlayer = ctk.CTkToplevel(app, fg_color=standartcolor[0])
             newlayer.resizable(width=False, height=False)
             newlayer.title('Element Info')
+            newlayer.attributes('-topmost', 'true')
             newlayer.grid()
             text = [
                 f'Name: {str(self.ElData[index].get("Path").split("/")[-1])}',
@@ -295,7 +326,7 @@ def main():
             for i in text:
                 frame = ctk.CTkFrame(newlayer, fg_color=standartcolor[1], corner_radius=5)
                 frame.grid(row=rowindex, column=0, padx=10, pady=10, sticky='WEN', columnspan=3)
-                lable = ctk.CTkLabel(frame, text=i, font=('Calibri', 15))
+                lable = ctk.CTkLabel(frame, text=i, font=('Calibri', 15), text_color='white')
                 lable.grid(padx=5, pady=3)
                 rowindex +=1
 
