@@ -8,6 +8,7 @@
  
  RegEdit - This page allow you to quick edit Windows Register by configuration file. To add new element press + and save, than edit save file "config.SUCF" with text editorusing JSon format. 
  In page you can on/off prewrited configs or delete it bu press x.
+ The backup option is export regedit to files in userfolder/backup. If this folder does not exist or something  will go wrong you will have error message.
  
  Folder Control - This page allow you to deny delete folder/files. To add new element press folder icon and select file/folder than press
  check mark icon. Than save all by pressing diskette button.
