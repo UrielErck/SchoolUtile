@@ -4,10 +4,14 @@ def dobackup():
     import os
     from plyer import notification
     import reader as rd
+    from pathlib import Path
     rez = 0
-
+    try:
+        os.makedirs(f'{Path.home()}\\backup')
+    except Exception:
+        print('Folder exist')
     for i in ['HKLM', 'HKCU', 'HKCR', 'HKU', 'HKCC']:
-        command = f'reg export {i} {os.getcwd()}\\backup\\{i}-{datetime.datetime.now().strftime("%Y-%m-%d")}.reg /y'
+        command = f'reg export {i} {Path.home()}\\backup\\{i}-{datetime.datetime.now().strftime("%Y-%m-%d")}.reg /y'
         print(command)
         temp = subprocess.call(command, creationflags=0x08000000)
         if temp == 1:

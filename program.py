@@ -4,7 +4,6 @@ arg.append('')
 print(arg)
 if len(arg) == 3 and arg[1] == '--BackUpRegedit':
     import backup
-
     backup.dobackup()
     sys.exit()
 
