@@ -21,6 +21,38 @@ def read_dump():
     return data
 
 
+def read_RegFoldersJson(alldata: int = 0):
+    import winreg as wrg
+    import json
+    # try:
+    PATH = wrg.OpenKey(
+        wrg.HKEY_LOCAL_MACHINE,
+        'SOFTWARE\\SchoolUtile'
+    )
+    value = json.loads(str(wrg.QueryValueEx(PATH, 'FoldersData')[0]))
+    value: dict
+    value = value.get('Data')
+    value: list
+    if value == None:
+        value = []
+    if alldata == 0 and value != None:
+        for i in range(len(value)):
+            value[i] = value[i].get('Name')
+    return value
+    # except Exception:
+    #     print(f'Json Read Error')
+    #     return []
+
+def write_RegFoldersJson(data: dict = {'Data': [{'Name': 'NotSelected', 'Access': ['NotSelected']}]}):
+    import winreg as wrg
+    import json
+    PATH = wrg.CreateKey(
+        wrg.HKEY_LOCAL_MACHINE,
+        'SOFTWARE\\SchoolUtile'
+    )
+    wrg.SetValueEx(PATH, 'FoldersData', 0, wrg.REG_EXPAND_SZ, json.dumps(data))
+
+
 def read_RegFolder():
     import winreg as wrg
     try:
@@ -29,6 +61,7 @@ def read_RegFolder():
             'SOFTWARE\\SchoolUtile'
         )
         value = wrg.QueryValueEx(PATH, 'FoldersData')[0]
+
         return value
     except OSError:
         print(f'Regedit key does not exist')

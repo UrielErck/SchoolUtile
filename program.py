@@ -25,21 +25,21 @@ def save_reg():
 
 try:
     import reader as rd
-    if rd.read_RegFolder() == []:
-        rd.write_RegFolder()
+    if rd.read_RegFoldersJson() == []:
+        rd.read_RegFoldersJson()
 except OSError:
     pass
 
-data = {'RegFolder': rd.read_RegFolder()}
+data = {'RegFolder': rd.read_RegFoldersJson()}
 import GUI
 GUI.main()
 
 try:
     import icaclsEdit as ie
     for i in data.get('RegFolder'):
-        if not i in rd.read_RegFolder():
+        if not i in rd.read_RegFoldersJson():
             ie.remove_acces(i)
-    for i in rd.read_RegFolder():
+    for i in rd.read_RegFoldersJson(alldata=1):
         ie.create_access(i)
 except PermissionError:
     print('Not Enough Permissions')

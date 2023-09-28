@@ -74,8 +74,8 @@ def main():
                                  fg_color=standartcolor[1], corner_radius=5, text_color='white')
             Title.grid(row=0, column=1, padx=5, pady=5, ipadx=5, ipady=5, sticky='WE')
 
-            githubphoto = ctk.CTkImage(light_image=Image.open(rd.resource_path('github_white.png')),
-                                       dark_image=Image.open(rd.resource_path('github_dark.png')), size=(23, 23))
+            githubphoto = ctk.CTkImage(light_image=Image.open(rd.resource_path('github_dark.png')),
+                                       dark_image=Image.open(rd.resource_path('github_white.png')), size=(23, 23))
             Githudbtn = ctk.CTkButton(master=textframe, image=githubphoto, text='', width=25, height=30,
                                      fg_color=standartcolor[1], corner_radius=5, hover_color=standartcolor[1][::-1],
                                       command=lambda: webbrowser.open(linkgit))
@@ -196,7 +196,7 @@ def main():
     class Access:
         root = ctk.CTkFrame(master=app, fg_color=standartcolor[0])
         visible = False
-        FoldersData = [i for i in rd.read_RegFolder()]
+        FoldersData = [i for i in rd.read_RegFoldersJson(alldata=1)]
         ElData = []
 
         def __init__(self):
@@ -213,24 +213,25 @@ def main():
             selectbtn = ctk.CTkButton(self.root, text='💾', width=30, font=('Calibre', 18), height=30,
                                       fg_color=standartcolor[1],
                                       corner_radius=5, hover_color=standartcolor[1][::-1],
-                                      command=lambda data=self.FoldersData: rd.write_RegFolder(data))
+                                      command=lambda data=self.FoldersData: rd.write_RegFoldersJson({'Data': data}))
             selectbtn.grid(row=1, column=0, sticky='SW', pady=10, padx=10)
             for i in self.FoldersData:
                 index += 1
                 frame = ctk.CTkFrame(master=self.Ellist, fg_color=standartcolor[1], corner_radius=5)
                 self.ElData.append({
                     'Frame': frame,
-                    'Name': ctk.CTkLabel(frame, text=f"{str(i.split('/')[-1])}", width=210, text_color='white'),
+                    'Name': ctk.CTkLabel(frame, text=f"{str(i.get('Name').split('/')[-1])}", width=210, text_color='white'),
                     'DelBtn': ctk.CTkButton(frame, text='×', height=22, width=22, fg_color='red',
                                             hover_color='dark red',
                                             command=lambda ind=index: self.delel(index=ind)),
-                    'Path': i,
+                    'Path': i.get('Name'),
+                    'Access': i.get('Access'),
                     'Index': index,
                     'infobtn': ctk.CTkButton(frame, text='i', height=22, width=22, fg_color='green',
                                             hover_color='dark green',
                                             command=lambda ind=index: self.info(index=ind)),
                 })
-                frame, name, delbtn, path, index, infobtn = self.ElData[index].values()
+                frame, name, delbtn, path, access, index, infobtn = self.ElData[index].values()
                 frame.grid(row=index, padx=10, pady=10, sticky='WE')
                 frame.grid_columnconfigure(1, weight=1)
                 name.grid(row=0, column=0, padx=5)
@@ -248,8 +249,8 @@ def main():
 
         def selel(self, lable, type: int = 0):
             if type == 0:
-                filename = ctk.filedialog.askdirectory()
-                filename: str
+                filename = tuple([ctk.filedialog.askdirectory()])
+                filename: tuple
             elif type == 1:
                 filename = ctk.filedialog.askopenfilenames(filetypes=(('Links', '*.lnk'), ('All files', '*.*')))
                 filename: tuple
@@ -259,6 +260,7 @@ def main():
             if filename == '':
                 print(f'Folder not selected')
                 return ''
+            print(filename)
             lable.configure(text='\n'.join(filename))
             return filename
 
@@ -270,7 +272,7 @@ def main():
 
             filename = filename.split('\n')
             for i in filename:
-                self.FoldersData.append(i)
+                self.FoldersData.append({'Name': i, 'Access': ['D']})
             print(f'filePATH: {filename}')
             self.__init__()
             return [frame, 0]
@@ -320,7 +322,7 @@ def main():
             newlayer.grid()
             text = [
                 f'Name: {str(self.ElData[index].get("Path").split("/")[-1])}',
-                f'Access type: M (Can`t delete folder/file)',
+                # f'Access type: {", ".join(self.ElData[index].get("Access"))}',
                     ]
             ctk.CTkButton(newlayer, fg_color=standartcolor[1], corner_radius=5, height=35,
                           text=f' Full Path: {self.ElData[index].get("Path")}', hover_color=standartcolor[1][::-1],
@@ -333,6 +335,23 @@ def main():
                 lable = ctk.CTkLabel(frame, text=i, font=('Calibri', 15), text_color='white')
                 lable.grid(padx=5, pady=3)
                 rowindex +=1
+
+            accstypeframe = ctk.CTkFrame(fg_color='transparent', height=35, master=newlayer)
+            newlayer.bind('<Return>', lambda idk: self.FoldersData[index].update({'Access': accstypeentr.get().strip(', ')}))
+            accstypeframe.grid(row=rowindex, column=0,  padx=10, pady=10, sticky='WEN', columnspan=3)
+
+            accstypename = ctk.CTkLabel(text='Access type: ', master=accstypeframe, fg_color=standartcolor[1], corner_radius=5)
+            accstypename.grid(row=0, column=0, ipadx=5)
+
+
+            accstypeentr = ctk.CTkEntry(placeholder_text='Example: D, W', master=accstypeframe)
+            accstypeentr.insert(index=0, string=', '.join(self.ElData[index].get('Access')))
+            accstypeentr.grid(row=0, column=1, padx=5, pady=3, columnspan=2)
+
+            accstypeinfo = ctk.CTkButton(master=accstypeframe, text='i', fg_color='green', hover_color='dark green',
+                                         height=25, width=25,
+                                         command=lambda: webbrowser.open('https://learn.microsoft.com/ru-ru/windows-server/administration/windows-commands/icacls'))
+            accstypeinfo.grid(row=0, column=3, padx=5, pady=3)
 
     class Menu:
         btncolor = standartcolor[1]
