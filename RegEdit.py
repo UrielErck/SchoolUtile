@@ -65,6 +65,7 @@ def InstallContextMenuAddon(
     # Add for files
     PATH = wrg.CreateKey(wrg.HKEY_CLASSES_ROOT, '*\shell\SchoolUtileAddon')
     wrg.SetValueEx(PATH, '', 0, wrg.REG_SZ, 'Set Access To This File')
+    wrg.SetValueEx(PATH, 'icon', 0, wrg.REG_SZ, f'{os.getcwd()}\\SchoolUtile.exe')
     PATH = wrg.CreateKey(wrg.HKEY_CLASSES_ROOT, '*\shell\SchoolUtileAddon\command')
     wrg.SetValueEx(PATH, '', 0, wrg.REG_SZ, f'{os.getcwd()}\\SchoolUtile.exe --AddNewElement %V')
 # print(read(wrg.HKEY_LOCAL_MACHINE, 'SOFTWARE\Policies\Microsoft\Windows\Personalization', 'NoLockScreen'))
