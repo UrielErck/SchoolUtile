@@ -1,3 +1,6 @@
+import pyuac
+
+
 def dobackup():
     import subprocess
     import datetime
@@ -68,3 +71,23 @@ def set_autostart_registry(app_name, key_data=None, autostart: bool = True) -> b
         except OSError:
             return False
     return True
+
+def addAccess(path):
+    import subprocess
+    import os
+    if not pyuac.isUserAdmin():
+        cmdcommand = f'powershell -Command "Start-Process -FilePath "{os.getcwd()}\\SchoolUtile.exe" -ArgumentList "--AddNewElement", \'{path}\' -Verb RunAs"'
+        print(cmdcommand)
+        subprocess.call(cmdcommand, creationflags=0x08000000)
+        return 2
+    import reader as rd
+    import icaclsEdit as iE
+    if path in rd.read_RegFoldersJson():
+        return 1
+    data = rd.read_RegFoldersJson(alldata=1)
+    command = {'Name': path, 'Access': rd.read_dump().get("DefaultAccessType")}
+    data.append(command)
+    rd.write_RegFoldersJson({'Data': data})
+    iE.create_access(command)
+    print(f'Command: {command}')
+    return 0

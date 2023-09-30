@@ -3,8 +3,9 @@ def create_access(data):
     import locale
     print(locale.getlocale())
     path = data.get('Name')
-    access = ', '.join(data.get('Access'))
+    access = f"({','.join(data.get('Access'))})"
     if list(locale.getlocale())[0] == 'Russian_Russia':
+        print(f'icacls "{path}" /deny "Все":{access}')
         subprocess.call(f'icacls "{path}" /deny "Все":{access}', creationflags=0x08000000)
         print('RUS')
     else:

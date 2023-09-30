@@ -1,4 +1,8 @@
 {
+    "DefaultAccessType": [
+        "D",
+        "W"
+    ],
     "RegEdit": [],
     "backup_state": 0
 }

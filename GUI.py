@@ -1,8 +1,8 @@
 def main():
     import reader as rd
     import customtkinter as ctk
-    from easygui import fileopenbox
     from PIL import Image
+    import RegEdit
     import webbrowser
     linkgit = 'https://github.com/UrielErck/SchoolUtile/tree/main'
     standartcolor = [('#FFFFFF', '#333333'), ('#336b97', '#154972')]
@@ -131,14 +131,6 @@ def main():
                 self.Elements.get('RegEdit')[i].update({'state': state})
                 rd.create_dump(self.Elements)
 
-        def backup(self, state):
-            data = rd.read_dump()
-            data: dict
-            data.update({'backup_state': state})
-            rd.create_dump(data)
-            import backup
-            backup.autorun(state)
-
         def __init__(self):
             super().__init__()
             self.ElFrame.destroy()
@@ -160,13 +152,6 @@ def main():
                                    fg_color=standartcolor[1], corner_radius=5, hover_color=standartcolor[1][::-1],
                                    command=self.add_el)
             addbtn.grid(column=1, padx=10, row=0)
-
-            backupswitch = ctk.CTkSwitch(master=self.root, text='Auto Back-Up', width=32, font=('Calibre', 14),
-                                         height=30)
-            backupswitch.configure(command=lambda: self.backup(state=backupswitch.get()))
-            if rd.read_dump().get("backup_state") in ['1', 1]:
-                backupswitch.select()
-            backupswitch.grid(column=1, row=1, padx=10, pady=10, sticky='S')
 
             index = 0
             for i in self.Elements.get('RegEdit'):
@@ -272,7 +257,7 @@ def main():
 
             filename = filename.split('\n')
             for i in filename:
-                self.FoldersData.append({'Name': i, 'Access': ['D']})
+                self.FoldersData.append({'Name': i, 'Access': rd.read_dump().get("DefaultAccessType")})
             print(f'filePATH: {filename}')
             self.__init__()
             return [frame, 0]
@@ -337,12 +322,11 @@ def main():
                 rowindex +=1
 
             accstypeframe = ctk.CTkFrame(fg_color='transparent', height=35, master=newlayer)
-            newlayer.bind('<Return>', lambda idk: self.FoldersData[index].update({'Access': accstypeentr.get().strip(', ')}))
+            newlayer.bind('<Return>', lambda idk: print('UPDATE:' + str(self.FoldersData[index].update({'Access': accstypeentr.get().strip(', ')}))))
             accstypeframe.grid(row=rowindex, column=0,  padx=10, pady=10, sticky='WEN', columnspan=3)
 
             accstypename = ctk.CTkLabel(text='Access type: ', master=accstypeframe, fg_color=standartcolor[1], corner_radius=5)
             accstypename.grid(row=0, column=0, ipadx=5)
-
 
             accstypeentr = ctk.CTkEntry(placeholder_text='Example: D, W', master=accstypeframe)
             accstypeentr.insert(index=0, string=', '.join(self.ElData[index].get('Access')))
@@ -353,12 +337,63 @@ def main():
                                          command=lambda: webbrowser.open('https://learn.microsoft.com/ru-ru/windows-server/administration/windows-commands/icacls'))
             accstypeinfo.grid(row=0, column=3, padx=5, pady=3)
 
+    class Settings:
+        visible = False
+        root = ctk.CTkFrame(master=app, corner_radius=5, fg_color='transparent')
+
+        def __init__(self):
+            self.root.grid(row=0, column=1)
+            Elframe = ctk.CTkScrollableFrame(master=self.root, corner_radius=5, fg_color='transparent', width=350)
+            Elframe.grid(row=0, column=0, padx=10, pady=10, columnspan=3, sticky='WE')
+
+            class backup_El:
+                frame = ctk.CTkFrame(master=Elframe, corner_radius=5, fg_color=standartcolor[1])
+                frame.grid(column=0, row=0, sticky='W')
+                backupswitch = ctk.CTkSwitch(master=frame, text='Auto Back-Up', width=32, font=('Calibre', 12),
+                                             height=30)
+                backupswitch.configure(command=lambda: self.backup(state=backup_El.backupswitch.get()))
+                if rd.read_dump().get("backup_state") in ['1', 1]:
+                    backupswitch.select()
+                backupswitch.grid(sticky='NSWE', padx=10, pady=5)
+
+            class Deafult_Access:
+                AccessFrame = ctk.CTkFrame(master=Elframe, corner_radius=5, fg_color=standartcolor[1])
+                AccessFrame.grid(pady=10, column=0, row=1, sticky='W')
+                AccessLable = ctk.CTkLabel(master=AccessFrame, text='Default Access Type: ', fg_color='transparent')
+                AccessLable.grid(row=0, column=0, padx=10, pady=5, sticky='NSWE')
+                AccessEntry = ctk.CTkEntry(master=AccessFrame, placeholder_text='Example: D, W')
+                if rd.read_dump().get('DefaultAccessType') != None:
+                    AccessEntry.insert(index=0, string=", ".join(rd.read_dump().get('DefaultAccessType')))
+                AccessEntry.grid(row=0, column=1, padx=5, pady=5, sticky='NSWE')
+                data = rd.read_dump()
+                command = lambda: Deafult_Access.data.update({'DefaultAccessType': Deafult_Access.AccessEntry.get().split(', ')})
+                AccessSaveButton = ctk.CTkButton(master=AccessFrame, text='💾', hover_color='dark green', fg_color='green', width=30, height=30, font=('Calibre', 20),
+                                                 command=lambda: rd.create_dump([Deafult_Access.command(), Deafult_Access.data][1]))
+                AccessSaveButton.grid(row=0, column=2, padx=5, pady=5, sticky='NSWE')
+
+            class ContextMenuAddon:
+                frame = ctk.CTkFrame(master=Elframe, corner_radius=5, fg_color=standartcolor[1])
+                frame.grid(row=2, sticky='W')
+                switch = ctk.CTkSwitch(master=frame, text='Context Menu Addon', onvalue=0, offvalue=1)
+                switch.configure(command=lambda: RegEdit.InstallContextMenuAddon(delete=ContextMenuAddon.switch.get()))
+                if RegEdit.InstallContextMenuAddon(check=1):
+                    switch.select()
+                switch.grid(sticky='NSWE', padx=10, pady=5)
+
+        def backup(self, state):
+            data = rd.read_dump()
+            data: dict
+            data.update({'backup_state': state})
+            rd.create_dump(data)
+            import backup
+            backup.autorun(state)
+
     class Menu:
         btncolor = standartcolor[1]
         frame = None
         buttonslist = []
         mainframe = None
-        items = {'Hello page': MainPage, 'RegEdit': RegEditFrame, 'Folder Control': Access}
+        items = {'Hello page': MainPage, 'RegEdit': RegEditFrame, 'Folder Control': Access, 'Settings': Settings}
         ismenuvisible = False
         btnitemsframe = None
 

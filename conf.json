@@ -22,6 +22,10 @@
    "value": "D:/Files/SchoolUtile/icon.ico"
   },
   {
+   "optionDest": "name",
+   "value": "SchoolUtile"
+  },
+  {
    "optionDest": "ascii",
    "value": false
   },

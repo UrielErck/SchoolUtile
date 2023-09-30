@@ -1,11 +1,17 @@
 import sys
 arg = sys.argv
-arg.append('')
 print(arg)
-if len(arg) == 3 and arg[1] == '--BackUpRegedit':
-    import backup
-    backup.dobackup()
-    sys.exit()
+if len(arg) >= 2:
+    if arg[1] == '--BackUpRegedit':
+        import backup
+        backup.dobackup()
+        sys.exit()
+    if arg[1] == '--AddNewElement':
+        import backup
+        data = ' '.join(arg[2:]).replace(chr(92), '/')
+        print(data)
+        backup.addAccess(data)
+        sys.exit()
 
 
 def save_reg():
@@ -27,8 +33,8 @@ try:
     import reader as rd
     if rd.read_RegFoldersJson() == []:
         rd.read_RegFoldersJson()
-except OSError:
-    pass
+except Exception:
+    rd.write_RegFoldersJson({'Data': []})
 
 data = {'RegFolder': rd.read_RegFoldersJson()}
 import GUI

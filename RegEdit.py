@@ -38,4 +38,33 @@ def add(key, sub_key, name, value, rtype):
     PATH = wrg.CreateKey(key, sub_key)
     wrg.SetValueEx(PATH, name, 0, rtype, value)
 
+def InstallContextMenuAddon(
+        delete: int = 0,
+        check: int = 0
+):
+    if check == 1:
+        try:
+            PATH = wrg.OpenKey(wrg.HKEY_CLASSES_ROOT, 'Directory\shell\SchoolUtileAddon')
+            return True
+        except Exception:
+            return False
+    if delete == 1:
+        # Delete for folders
+        wrg.DeleteKeyEx(wrg.HKEY_CLASSES_ROOT, 'Directory\shell\SchoolUtileAddon\command')
+        wrg.DeleteKeyEx(wrg.HKEY_CLASSES_ROOT, 'Directory\shell\SchoolUtileAddon')
+        # Delete for files
+        wrg.DeleteKeyEx(wrg.HKEY_CLASSES_ROOT, '*\shell\SchoolUtileAddon\command')
+        wrg.DeleteKeyEx(wrg.HKEY_CLASSES_ROOT, '*\shell\SchoolUtileAddon')
+        return None
+    import os
+    # Add for folders
+    PATH = wrg.CreateKey(wrg.HKEY_CLASSES_ROOT, 'Directory\shell\SchoolUtileAddon')
+    wrg.SetValueEx(PATH, '', 0, wrg.REG_SZ, 'Set Access To This File')
+    PATH = wrg.CreateKey(wrg.HKEY_CLASSES_ROOT, 'Directory\shell\SchoolUtileAddon\command')
+    wrg.SetValueEx(PATH, '', 0, wrg.REG_SZ, f'{os.getcwd()}\\SchoolUtile.exe --AddNewElement %1')
+    # Add for files
+    PATH = wrg.CreateKey(wrg.HKEY_CLASSES_ROOT, '*\shell\SchoolUtileAddon')
+    wrg.SetValueEx(PATH, '', 0, wrg.REG_SZ, 'Set Access To This File')
+    PATH = wrg.CreateKey(wrg.HKEY_CLASSES_ROOT, '*\shell\SchoolUtileAddon\command')
+    wrg.SetValueEx(PATH, '', 0, wrg.REG_SZ, f'{os.getcwd()}\\SchoolUtile.exe --AddNewElement %V')
 # print(read(wrg.HKEY_LOCAL_MACHINE, 'SOFTWARE\Policies\Microsoft\Windows\Personalization', 'NoLockScreen'))
