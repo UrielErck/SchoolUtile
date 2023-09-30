@@ -181,7 +181,7 @@ def main():
     class Access:
         root = ctk.CTkFrame(master=app, fg_color=standartcolor[0])
         visible = False
-        FoldersData = [i for i in rd.read_RegFoldersJson(alldata=1)]
+        FoldersData = rd.read_RegFoldersJson(alldata=1)
         ElData = []
 
         def __init__(self):
@@ -322,13 +322,14 @@ def main():
                 rowindex +=1
 
             accstypeframe = ctk.CTkFrame(fg_color='transparent', height=35, master=newlayer)
-            newlayer.bind('<Return>', lambda idk: print('UPDATE:' + str(self.FoldersData[index].update({'Access': accstypeentr.get().strip(', ')}))))
+            newlayer.bind('<Return>', lambda idk: self.FoldersData[index].update({'Access': accstypeentr.get().split(', ')}))
             accstypeframe.grid(row=rowindex, column=0,  padx=10, pady=10, sticky='WEN', columnspan=3)
 
             accstypename = ctk.CTkLabel(text='Access type: ', master=accstypeframe, fg_color=standartcolor[1], corner_radius=5)
             accstypename.grid(row=0, column=0, ipadx=5)
 
             accstypeentr = ctk.CTkEntry(placeholder_text='Example: D, W', master=accstypeframe)
+            print(self.ElData[index].get('Access'))
             accstypeentr.insert(index=0, string=', '.join(self.ElData[index].get('Access')))
             accstypeentr.grid(row=0, column=1, padx=5, pady=3, columnspan=2)
 
