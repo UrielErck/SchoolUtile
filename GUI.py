@@ -330,7 +330,7 @@ def main():
 
             accstypeentr = ctk.CTkEntry(placeholder_text='Example: D, W', master=accstypeframe)
             print(self.ElData[index].get('Access'))
-            accstypeentr.insert(index=0, string=', '.join(self.ElData[index].get('Access')))
+            accstypeentr.insert(index=0, string=str(self.ElData[index].get('Access')))
             accstypeentr.grid(row=0, column=1, padx=5, pady=3, columnspan=2)
 
             accstypeinfo = ctk.CTkButton(master=accstypeframe, text='i', fg_color='green', hover_color='dark green',
@@ -364,10 +364,10 @@ def main():
                 AccessLable.grid(row=0, column=0, padx=10, pady=5, sticky='NSWE')
                 AccessEntry = ctk.CTkEntry(master=AccessFrame, placeholder_text='Example: D, W')
                 if rd.read_dump().get('DefaultAccessType') != None:
-                    AccessEntry.insert(index=0, string=", ".join(rd.read_dump().get('DefaultAccessType')))
+                    AccessEntry.insert(index=0, string=str(rd.read_dump().get('DefaultAccessType')))
                 AccessEntry.grid(row=0, column=1, padx=5, pady=5, sticky='NSWE')
                 data = rd.read_dump()
-                command = lambda: Deafult_Access.data.update({'DefaultAccessType': Deafult_Access.AccessEntry.get().split(', ')})
+                command = lambda: Deafult_Access.data.update({'DefaultAccessType': str(Deafult_Access.AccessEntry.get())})
                 AccessSaveButton = ctk.CTkButton(master=AccessFrame, text='💾', hover_color='dark green', fg_color='green', width=30, height=30, font=('Calibre', 20),
                                                  command=lambda: rd.create_dump([Deafult_Access.command(), Deafult_Access.data][1]))
                 AccessSaveButton.grid(row=0, column=2, padx=5, pady=5, sticky='NSWE')
