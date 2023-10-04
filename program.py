@@ -53,4 +53,4 @@ try:
     save_reg()
 except PermissionError:
     print('Not Enough Permissions')
-exit()
+sys.exit()
