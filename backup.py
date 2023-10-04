@@ -85,7 +85,7 @@ def addAccess(path):
     if path in rd.read_RegFoldersJson():
         return 1
     data = rd.read_RegFoldersJson(alldata=1)
-    command = {'Name': path, 'Access': rd.read_dump().get("DefaultAccessType")}
+    command = {'Name': path, 'Access': rd.read_dump().get("DefaultAccessType"), 'User': str(rd.read_dump().get('User'))}
     data.append(command)
     rd.write_RegFoldersJson({'Data': data})
     iE.create_access(command)

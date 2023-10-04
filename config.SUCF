@@ -1,5 +1,6 @@
 {
-    "DefaultAccessType": "(OI)(CI)(DC,DE)",
+    "DefaultAccessType": "(NP)(OI)(CI)(DC,DE)",
     "RegEdit": [],
+    "User": "User1",
     "backup_state": 0
 }

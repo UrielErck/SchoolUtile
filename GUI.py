@@ -74,7 +74,7 @@ def main():
                                  fg_color=standartcolor[1], corner_radius=5, text_color='white')
             Title.grid(row=0, column=1, padx=5, pady=5, ipadx=5, ipady=5, sticky='WE')
 
-            githubphoto = ctk.CTkImage(light_image=Image.open(rd.resource_path('github_dark.png')),
+            githubphoto = ctk.CTkImage(light_image=Image.open(rd.resource_path('github_white.png')),
                                        dark_image=Image.open(rd.resource_path('github_white.png')), size=(23, 23))
             Githudbtn = ctk.CTkButton(master=textframe, image=githubphoto, text='', width=25, height=30,
                                      fg_color=standartcolor[1], corner_radius=5, hover_color=standartcolor[1][::-1],
@@ -215,8 +215,9 @@ def main():
                     'infobtn': ctk.CTkButton(frame, text='i', height=22, width=22, fg_color='green',
                                             hover_color='dark green',
                                             command=lambda ind=index: self.info(index=ind)),
+                    'User': i.get('User')
                 })
-                frame, name, delbtn, path, access, index, infobtn = self.ElData[index].values()
+                frame, name, delbtn, path, access, index, infobtn, user = self.ElData[index].values()
                 frame.grid(row=index, padx=10, pady=10, sticky='WE')
                 frame.grid_columnconfigure(1, weight=1)
                 name.grid(row=0, column=0, padx=5)
@@ -257,7 +258,7 @@ def main():
 
             filename = filename.split('\n')
             for i in filename:
-                self.FoldersData.append({'Name': i, 'Access': rd.read_dump().get("DefaultAccessType")})
+                self.FoldersData.append({'Name': i, 'Access': rd.read_dump().get("DefaultAccessType"), 'User': rd.read_dump().get('User')})
             print(f'filePATH: {filename}')
             self.__init__()
             return [frame, 0]
@@ -300,6 +301,10 @@ def main():
             nobtn.grid(row=1, column=1, sticky='E', padx=5, pady=5)
 
         def info(self, index: int = 0):
+            def savechanges(idk):
+                self.FoldersData[index].update({'Access': accstypeentr.get()})
+                self.FoldersData[index].update({'User': accstypeuserent.get()})
+
             newlayer = ctk.CTkToplevel(app, fg_color=standartcolor[0])
             newlayer.resizable(width=False, height=False)
             newlayer.title('Element Info')
@@ -311,7 +316,7 @@ def main():
                     ]
             ctk.CTkButton(newlayer, fg_color=standartcolor[1], corner_radius=5, height=35,
                           text=f' Full Path: {self.ElData[index].get("Path")}', hover_color=standartcolor[1][::-1],
-                          command=lambda: webbrowser.open("/".join(self.ElData[index].get("Path").split("/")[:-1])))\
+                          command=lambda: webbrowser.open("/".join(self.ElData[index].get("Path").split("/")[:-1])), anchor='w')\
                 .grid(row=0, column=0, padx=10, pady=10, sticky='WEN', columnspan=3)
             rowindex = 1
             for i in text:
@@ -322,21 +327,35 @@ def main():
                 rowindex +=1
 
             accstypeframe = ctk.CTkFrame(fg_color='transparent', height=35, master=newlayer)
-            newlayer.bind('<Return>', lambda idk: self.FoldersData[index].update({'Access': accstypeentr.get().split(', ')}))
+            print(self.ElData[index].get('Access'))
+            newlayer.bind('<Return>', savechanges)
             accstypeframe.grid(row=rowindex, column=0,  padx=10, pady=10, sticky='WEN', columnspan=3)
 
-            accstypename = ctk.CTkLabel(text='Access type: ', master=accstypeframe, fg_color=standartcolor[1], corner_radius=5)
+            accstypename = ctk.CTkLabel(text='Access type: ', master=accstypeframe, fg_color=standartcolor[1], corner_radius=5, text_color='white')
             accstypename.grid(row=0, column=0, ipadx=5)
 
-            accstypeentr = ctk.CTkEntry(placeholder_text='Example: D, W', master=accstypeframe)
-            print(self.ElData[index].get('Access'))
-            accstypeentr.insert(index=0, string=str(self.ElData[index].get('Access')))
+            accstypeentr = ctk.CTkEntry(placeholder_text='Example: D,W', master=accstypeframe)
+            try:
+                accstypeentr.insert(index=0, string=str(self.ElData[index].get('Access')))
+            finally:
+                pass
             accstypeentr.grid(row=0, column=1, padx=5, pady=3, columnspan=2)
 
             accstypeinfo = ctk.CTkButton(master=accstypeframe, text='i', fg_color='green', hover_color='dark green',
                                          height=25, width=25,
                                          command=lambda: webbrowser.open('https://learn.microsoft.com/ru-ru/windows-server/administration/windows-commands/icacls'))
             accstypeinfo.grid(row=0, column=3, padx=5, pady=3)
+
+            accstypeuser = ctk.CTkFrame(master=accstypeframe, fg_color='transparent', height=35)
+            accstypeuser.grid(row=0, column=4, padx=5, pady=3)
+
+            accstypeuserlable = ctk.CTkLabel(master=accstypeuser, text='User Name')
+            accstypeuserlable.grid(row=0, column=0, padx=5, pady=3)
+
+            accstypeuserent = ctk.CTkEntry(master=accstypeuser, placeholder_text='Example: User1')
+            accstypeuserent.insert(0, str(self.ElData[index].get('User')))
+            accstypeuserent.grid(row=0, column=1, padx=5, pady=3)
+
 
     class Settings:
         visible = False
@@ -351,7 +370,7 @@ def main():
                 frame = ctk.CTkFrame(master=Elframe, corner_radius=5, fg_color=standartcolor[1])
                 frame.grid(column=0, row=0, sticky='W')
                 backupswitch = ctk.CTkSwitch(master=frame, text='Auto Back-Up', width=32, font=('Calibre', 12),
-                                             height=30)
+                                             height=30, text_color='white')
                 backupswitch.configure(command=lambda: self.backup(state=backup_El.backupswitch.get()))
                 if rd.read_dump().get("backup_state") in ['1', 1]:
                     backupswitch.select()
@@ -360,9 +379,9 @@ def main():
             class Deafult_Access:
                 AccessFrame = ctk.CTkFrame(master=Elframe, corner_radius=5, fg_color=standartcolor[1])
                 AccessFrame.grid(pady=10, column=0, row=1, sticky='W')
-                AccessLable = ctk.CTkLabel(master=AccessFrame, text='Default Access Type: ', fg_color='transparent')
+                AccessLable = ctk.CTkLabel(master=AccessFrame, text='Default Access Type: ', fg_color='transparent', text_color='white')
                 AccessLable.grid(row=0, column=0, padx=10, pady=5, sticky='NSWE')
-                AccessEntry = ctk.CTkEntry(master=AccessFrame, placeholder_text='Example: D, W')
+                AccessEntry = ctk.CTkEntry(master=AccessFrame, placeholder_text='Example: D,W')
                 if rd.read_dump().get('DefaultAccessType') != None:
                     AccessEntry.insert(index=0, string=str(rd.read_dump().get('DefaultAccessType')))
                 AccessEntry.grid(row=0, column=1, padx=5, pady=5, sticky='NSWE')
@@ -375,11 +394,32 @@ def main():
             class ContextMenuAddon:
                 frame = ctk.CTkFrame(master=Elframe, corner_radius=5, fg_color=standartcolor[1])
                 frame.grid(row=2, sticky='W')
-                switch = ctk.CTkSwitch(master=frame, text='Context Menu Addon', onvalue=0, offvalue=1)
+                switch = ctk.CTkSwitch(master=frame, text='Context Menu Addon', onvalue=0, offvalue=1, text_color='white')
                 switch.configure(command=lambda: RegEdit.InstallContextMenuAddon(delete=ContextMenuAddon.switch.get()))
                 if RegEdit.InstallContextMenuAddon(check=1):
                     switch.select()
                 switch.grid(sticky='NSWE', padx=10, pady=5)
+
+            class ExecUser:
+                def savechanges(self):
+                    temp = rd.read_dump()
+                    temp.update({'User': ExecUser.Userent.get()})
+                    rd.create_dump(temp)
+
+                frame = ctk.CTkFrame(master=Elframe, corner_radius=5, fg_color=standartcolor[1])
+                frame.grid(row=3, sticky='W', pady=14)
+
+                Userlabl = ctk.CTkLabel(master=frame, text='User Name')
+                Userlabl.grid(row=0, column=0, padx=5, pady=3)
+
+                Userent = ctk.CTkEntry(master=frame, placeholder_text='Example: User1')
+                Userent.insert(0, str(rd.read_dump().get('User')))
+                Userent.grid(row=0, column=1, padx=5, pady=3)
+
+                SaveButton = ctk.CTkButton(master=frame, text='💾', hover_color='dark green',
+                                                 fg_color='green', width=30, height=30, font=('Calibre', 20),
+                                                 command=lambda: ExecUser.savechanges(ExecUser))
+                SaveButton.grid(row=0, column=2, padx=5, pady=5, sticky='NSWE')
 
         def backup(self, state):
             data = rd.read_dump()
