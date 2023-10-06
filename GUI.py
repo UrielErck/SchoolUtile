@@ -326,7 +326,7 @@ def main():
                 lable.grid(padx=5, pady=3)
                 rowindex +=1
 
-            accstypeframe = ctk.CTkFrame(fg_color='transparent', height=35, master=newlayer)
+            accstypeframe = ctk.CTkFrame(fg_color=standartcolor[1], height=35, master=newlayer)
             print(self.ElData[index].get('Access'))
             newlayer.bind('<Return>', savechanges)
             accstypeframe.grid(row=rowindex, column=0,  padx=10, pady=10, sticky='WEN', columnspan=3)
@@ -346,10 +346,10 @@ def main():
                                          command=lambda: webbrowser.open('https://learn.microsoft.com/ru-ru/windows-server/administration/windows-commands/icacls'))
             accstypeinfo.grid(row=0, column=3, padx=5, pady=3)
 
-            accstypeuser = ctk.CTkFrame(master=accstypeframe, fg_color='transparent', height=35)
+            accstypeuser = ctk.CTkFrame(master=accstypeframe, fg_color=standartcolor[1], height=35)
             accstypeuser.grid(row=0, column=4, padx=5, pady=3)
 
-            accstypeuserlable = ctk.CTkLabel(master=accstypeuser, text='User Name')
+            accstypeuserlable = ctk.CTkLabel(master=accstypeuser, text='User Name', text_color='white')
             accstypeuserlable.grid(row=0, column=0, padx=5, pady=3)
 
             accstypeuserent = ctk.CTkEntry(master=accstypeuser, placeholder_text='Example: User1')
@@ -409,7 +409,7 @@ def main():
                 frame = ctk.CTkFrame(master=Elframe, corner_radius=5, fg_color=standartcolor[1])
                 frame.grid(row=3, sticky='W', pady=14)
 
-                Userlabl = ctk.CTkLabel(master=frame, text='User Name')
+                Userlabl = ctk.CTkLabel(master=frame, text='User Name', text_color='white')
                 Userlabl.grid(row=0, column=0, padx=5, pady=3)
 
                 Userent = ctk.CTkEntry(master=frame, placeholder_text='Example: User1')
