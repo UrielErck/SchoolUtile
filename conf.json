@@ -108,6 +108,10 @@
   {
    "optionDest": "datas",
    "value": "D:/Files/SchoolUtile/backup.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/Files/SchoolUtile/customtheme.json;."
   }
  ],
  "nonPyinstallerOptions": {

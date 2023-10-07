@@ -9,7 +9,7 @@ def main():
     import darkdetect as darkdt
     # color calc
     linkgit = 'https://github.com/UrielErck/SchoolUtile/tree/main'
-    ctk.set_default_color_theme("customtheme.json")
+    ctk.set_default_color_theme(rd.resource_path("customtheme.json"))
     app = ctk.CTk()
     app.resizable(width=False, height=False)
     app.title('')
@@ -346,7 +346,7 @@ def main():
                                          command=lambda: webbrowser.open('https://learn.microsoft.com/ru-ru/windows-server/administration/windows-commands/icacls'))
             accstypeinfo.grid(row=0, column=3, padx=5, pady=3)
 
-            accstypeuser = ctk.CTkFrame(master=accstypeframe, height=35)
+            accstypeuser = ctk.CTkFrame(master=accstypeframe, height=35, fg_color='transparent')
             accstypeuser.grid(row=0, column=4, padx=5, pady=3)
 
             accstypeuserlable = ctk.CTkLabel(master=accstypeuser, text='User Name', text_color='white')
