@@ -67,12 +67,12 @@ def main():
                     'My email: qugifurldfk@gmail.com',
                          ]}
         visible = False
-        root = ctk.CTkFrame(master=app)
+        root = ctk.CTkFrame(master=app, fg_color='transparent')
 
         def __init__(self):
             super().__init__()
             self.root.grid(column=1, row=0)
-            textframe = ctk.CTkScrollableFrame(master=self.root, fg_color='transparent', width=380)
+            textframe = ctk.CTkScrollableFrame(master=self.root, width=380)
             textframe.grid(column=1, row=0, padx=10, pady=10)
             Title = ctk.CTkLabel(master=textframe, font=('Calibre', 20), text=self.text.get('Title'), corner_radius=5,
                                  text_color='white')
@@ -91,11 +91,11 @@ def main():
 
     class RegEditFrame:
         visible = False
-        root = ctk.CTkFrame(master=app)
+        root = ctk.CTkFrame(master=app, fg_color='transparent')
         dataEnt = []
         Elements = rd.read_dump()
         ischanged = 0
-        ElFrame = ctk.CTkScrollableFrame(master=root, width=300)
+        ElFrame = ctk.CTkScrollableFrame(master=root, width=300, fg_color='transparent')
 
         def add_el(self):
             print(f'Add el Name: NEW')
@@ -140,7 +140,7 @@ def main():
             self.root.grid(row=0, column=1)
             self.dataEnt = []
             app.bind('<Return>', lambda event: self.save_changes())
-            self.ElFrame = ctk.CTkScrollableFrame(master=self.root, width=300)
+            self.ElFrame = ctk.CTkScrollableFrame(master=self.root, width=300, fg_color='transparent')
             self.ElFrame.grid(row=0, column=0, sticky='E', columnspan=3)
 
             savebtn = ctk.CTkButton(master=self.root, text='💾', width=30, font=('Calibre', 18), height=30, corner_radius=5,
@@ -177,7 +177,7 @@ def main():
 
 
     class Access:
-        root = ctk.CTkFrame(master=app)
+        root = ctk.CTkFrame(master=app, fg_color='transparent')
         visible = False
         FoldersData = rd.read_RegFoldersJson(alldata=1)
         ElData = []
@@ -186,7 +186,7 @@ def main():
             self.ElData = []
             self.root.grid(row=0, column=1)
             index = -1
-            self.Ellist = ctk.CTkScrollableFrame(self.root, width=300)
+            self.Ellist = ctk.CTkScrollableFrame(self.root, fg_color='transparent', width=300)
             self.Ellist.grid(row=0, column=0, sticky='E', columnspan=3)
             selectbtn = ctk.CTkButton(self.root, text='📂', width=30, font=('Calibre', 18), height=30,
                                       corner_radius=5,
@@ -201,7 +201,8 @@ def main():
                 frame = ctk.CTkFrame(master=self.Ellist, corner_radius=5)
                 self.ElData.append({
                     'Frame': frame,
-                    'Name': ctk.CTkLabel(frame, text=f"{str(i.get('Name').split('/')[-1])}", width=210, text_color='white'),
+                    'Name': ctk.CTkLabel(frame, width=210, text_color='white',
+                                         text=f"{str(i.get('Name').split('/')[-1])[:25]+'...' if len(str(i.get('Name').split('/')[-1])) > 25 else str(i.get('Name').split('/')[-1])}"),
                     'DelBtn': ctk.CTkButton(frame, text='×', height=22, width=22, fg_color='red',
                                             hover_color='dark red',
                                             command=lambda ind=index: self.delel(index=ind)),
@@ -242,7 +243,6 @@ def main():
             if filename == '':
                 print(f'Folder not selected')
                 return ''
-            print(filename)
             lable.configure(text='\n'.join(filename))
             return filename
 
@@ -270,11 +270,11 @@ def main():
 
 
             lablepath = ctk.CTkLabel(newlayer, text=path, font=('Calibri', 15),
-                                     corner_radius=5, width=280, text_color='white')
+                                     corner_radius=5, width=280, text_color='white', bg_color=("#A0A0A0", "#505050"))
             lablepath.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
 
             # Select Frame
-            selframe = ctk.CTkFrame(newlayer)
+            selframe = ctk.CTkFrame(newlayer, fg_color='transparent')
             selframe.grid(row=1, column=0, columnspan=2, sticky='W')
 
             selfoldbtn = ctk.CTkButton(selframe, text='Select Folder', width=40,
@@ -286,7 +286,7 @@ def main():
             selfilebtn.grid(row=1, column=1, padx=5, pady=5, sticky='E')
 
             # Ask frame
-            askframe = ctk.CTkFrame(newlayer)
+            askframe = ctk.CTkFrame(newlayer, fg_color='transparent')
             askframe.grid(row=1, column=1, columnspan=2, sticky='E')
 
             yesbtn = ctk.CTkButton(askframe, text='✔', width=25, fg_color='green', hover_color='dark green',
@@ -455,7 +455,7 @@ def main():
             for i in self.items.keys():
                 row += 1
                 self.buttonslist.append(
-                    [ctk.CTkButton(master=self.btnitemsframe, text=i, corner_radius=5, font=('Arial', 12)), i,
+                    [ctk.CTkButton(master=self.btnitemsframe, text=i, fg_color='transparent', corner_radius=5, font=('Arial', 12)), i,
                      lambda i=i: setvisible(self.items.get(i))])
                 self.buttonslist[row - 1][0].configure(command=self.buttonslist[row - 1][2], bg_color='transparent')
                 self.buttonslist[row-1][0].grid(row=row, column=0, padx=5, pady=5)
@@ -469,7 +469,7 @@ def main():
 
             else:
                 self.ismenuvisible = True
-                self.btnitemsframe.grid(row=1, column=0)
+                self.btnitemsframe.grid(row=1, column=0, padx=14)
                 self.opconffile.grid(column=0, sticky='S', pady=10)
 
 

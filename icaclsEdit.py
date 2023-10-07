@@ -10,13 +10,8 @@ def create_access(data):
     remove_acces(path=path)
     print('Remove Successful')
     print(f'Path: {path} \nAccess: {access} \nUser: {user}')
-    if list(locale.getlocale())[0] == 'Russian_Russia':
-        subprocess.call(f'icacls "{path}" /deny "{user}":{access}', creationflags=0x08000000)
-        print('RUS')
-
-    else:
-        subprocess.call(f'icacls "{path}" /deny "{user}":{access}', creationflags=0x08000000)
-        print('ENG')
+    subprocess.call(f'icacls "{path}" /deny "{user}":{access}', creationflags=0x08000000)
+    print('Element Add Successful')
 
 def remove_acces(path):
     import subprocess
