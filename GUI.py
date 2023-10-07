@@ -6,14 +6,18 @@ def main():
     import webbrowser
     from BlurWindow.blurWindow import blur
     from ctypes import windll
+    import darkdetect as darkdt
     # color calc
     linkgit = 'https://github.com/UrielErck/SchoolUtile/tree/main'
     ctk.set_default_color_theme("customtheme.json")
     app = ctk.CTk()
     app.resizable(width=False, height=False)
-    app.title('Admin tool')
+    app.title('')
     app.iconbitmap(rd.resource_path('icon.ico'))
     app.attributes('-topmost', 'true')
+    app.wm_attributes("-transparent", str(app.cget('fg_color')[1 if darkdt.isDark() else 0]))
+    hWnd = windll.user32.GetForegroundWindow()
+    blur(hwnd=hWnd, hexColor=str(app.cget('fg_color')[1 if darkdt.isDark() else 0])[1:], Acrylic=False, Dark=True)
 
     class MainPage:
         text = {'Title': 'User`s Manual',

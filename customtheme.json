@@ -29,7 +29,7 @@
   "CTkEntry": {
       "corner_radius": 6,
       "border_width": 2,
-      "fg_color": ["#F0F0F0", "#363636"],
+      "fg_color": ["#F0F0F0", "#303030"],
       "border_color": ["#808080", "#606060"],
       "text_color": ["#363636", "#F0F0F0"],
       "placeholder_text_color": ["#878787", "#757575"]
