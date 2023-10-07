@@ -72,8 +72,8 @@ def main():
         def __init__(self):
             super().__init__()
             self.root.grid(column=1, row=0)
-            textframe = ctk.CTkScrollableFrame(master=self.root, fg_color='transparent', width=350)
-            textframe.grid(column=1, row=0, ipadx=10, ipady=10, columnspan=2)
+            textframe = ctk.CTkScrollableFrame(master=self.root, fg_color='transparent', width=380)
+            textframe.grid(column=1, row=0, padx=10, pady=10)
             Title = ctk.CTkLabel(master=textframe, font=('Calibre', 20), text=self.text.get('Title'), corner_radius=5,
                                  text_color='white')
             Title.grid(row=0, column=1, padx=5, pady=5, ipadx=5, ipady=5, sticky='WE')
