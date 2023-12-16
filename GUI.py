@@ -15,9 +15,9 @@ def main():
     app.title('')
     app.iconbitmap(rd.resource_path('icon.ico'))
     app.attributes('-topmost', 'true')
-    app.wm_attributes("-transparent", str(app.cget('fg_color')[1 if darkdt.isDark() else 0]))
-    hWnd = windll.user32.GetForegroundWindow()
-    blur(hwnd=hWnd, hexColor=str(app.cget('fg_color')[1 if darkdt.isDark() else 0])[1:], Acrylic=False, Dark=True)
+    # app.wm_attributes("-transparent", str(app.cget('fg_color')[1 if darkdt.isDark() else 0]))
+    # hWnd = windll.user32.GetForegroundWindow()
+    # blur(hwnd=hWnd, hexColor=str(app.cget('fg_color')[1 if darkdt.isDark() else 0])[1:], Acrylic=False, Dark=True)
 
     class MainPage:
         text = {'Title': 'User`s Manual',
@@ -439,13 +439,13 @@ def main():
 
         def __init__(self):
             super().__init__()
-            self.frame = ctk.CTkFrame(master=self.mainframe, corner_radius=5, bg_color='transparent')
+            self.frame = ctk.CTkFrame(master=self.mainframe, corner_radius=5)
             self.frame.grid(row=0, column=0, sticky='NS', pady=8, padx=8)
             menubtn = ctk.CTkButton(master=self.frame, text='≡', font=('Arial', 27), command=self.openmenu, width=30,
-                                    corner_radius=5)
+                                    corner_radius=5, fg_color='transparent')
             menubtn.grid(row=0, column=0, pady=5, padx=5)
 
-            self.opconffile = ctk.CTkButton(master=self.frame, text='Open Configuration File', corner_radius=5,
+            self.opconffile = ctk.CTkButton(master=self.frame, text='Open Configuration File', corner_radius=5, fg_color='transparent',
                                             width=30, command=lambda: webbrowser.open('config.SUCF'), font=('Arial', 12))
             self.addmenuitems()
 
